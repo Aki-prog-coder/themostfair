@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>themostfair — веб-разработчик</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f5f1;--fg:#14141a;--mut:#6a6a75;--card:#ffffffcc;--line:#14141a1f;--a:#6d4aff;--b:#ff4f8b;--dot:109,74,255}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#08080d;--fg:#f2f2f7;--mut:#9a9aa8;--card:#13131dcc;--line:#ffffff1f;--a:#8b6bff;--b:#ff5c9a;--dot:139,107,255}}
+:root[data-theme="dark"]{--bg:#08080d;--fg:#f2f2f7;--mut:#9a9aa8;--card:#13131dcc;--line:#ffffff1f;--a:#8b6bff;--b:#ff5c9a;--dot:139,107,255}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow{position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:0;left:0;top:0;background:radial-gradient(circle,rgba(var(--dot),.22),transparent 65%);transform:translate(-50%,-50%)}
+main,nav,footer{position:relative;z-index:1}
+nav{position:sticky;top:env(safe-area-inset-top,0px);display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 70%,transparent);border-bottom:1px solid var(--line);z-index:5}
+nav b{letter-spacing:.04em}
+nav div{display:flex;gap:18px;align-items:center;font-size:14px}
+nav a{color:var(--mut);text-decoration:none;transition:color .2s}nav a:hover{color:var(--fg)}
+#theme{background:none;border:1px solid var(--line);color:var(--fg);border-radius:99px;width:34px;height:34px;cursor:pointer}
+section{padding:12vh 5vw;max-width:1180px;margin:auto}
+.hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center}
+.tag{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--card);padding:6px 14px;border-radius:99px;font-size:13px;width:fit-content;color:var(--mut)}
+.tag i{width:8px;height:8px;border-radius:50%;background:#2fd37a;box-shadow:0 0 0 0 #2fd37a;animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px transparent}}
+h1{font-size:clamp(44px,9vw,120px);line-height:1;margin:.35em 0 .2em;letter-spacing:-.04em}
+.grad{background:linear-gradient(110deg,var(--a),var(--b),var(--a));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 5s linear infinite}
+@keyframes flow{to{background-position:200% center}}
+.role{font-size:clamp(18px,2.6vw,28px);color:var(--mut);min-height:1.6em}
+.role span{color:var(--fg)}.role:after{content:"▍";animation:blink 1s steps(2) infinite;color:var(--a)}
+@keyframes blink{50%{opacity:0}}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{display:inline-block;padding:14px 26px;border-radius:99px;text-decoration:none;font-weight:600;border:1px solid var(--line);color:var(--fg);transition:transform .2s,box-shadow .3s}
+.btn.p{background:linear-gradient(110deg,var(--a),var(--b));color:#fff;border:0}
+.btn:hover{box-shadow:0 10px 40px -10px var(--a)}
+h2{font-size:clamp(30px,5vw,56px);letter-spacing:-.03em;margin:0 0 .6em}
+h2 small{display:block;font-size:13px;letter-spacing:.2em;color:var(--a);margin-bottom:8px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;backdrop-filter:blur(10px);transition:transform .15s,border-color .3s;transform-style:preserve-3d;will-change:transform}
+.card:hover{border-color:var(--a)}
+.card h3{margin:.2em 0}.card p{color:var(--mut);margin:0}
+.ic{font-size:30px}
+.stats{display:flex;gap:40px;flex-wrap:wrap;margin-top:30px}
+.stats b{display:block;font-size:44px;letter-spacing:-.03em}.stats span{color:var(--mut);font-size:14px}
+.work .thumb{height:170px;border-radius:14px;margin-bottom:18px;display:grid;place-items:center;font-size:54px;position:relative;overflow:hidden}
+.work .thumb:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,#ffffff55 50%,transparent 60%);transform:translateX(-100%);transition:transform .8s}
+.work:hover .thumb:after{transform:translateX(100%)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.chips em{font-style:normal;font-size:12px;border:1px solid var(--line);padding:3px 10px;border-radius:99px;color:var(--mut)}
+.marq{overflow:hidden;border-block:1px solid var(--line);padding:16px 0;position:relative;z-index:1}
+.marq div{display:flex;gap:48px;width:max-content;animation:m 28s linear infinite;font-size:22px;font-weight:700;color:var(--mut)}
+.marq:hover div{animation-play-state:paused}
+@keyframes m{to{transform:translateX(-50%)}}
+.steps{counter-reset:s}.steps .card:before{counter-increment:s;content:"0" counter(s);font-size:40px;font-weight:800;color:var(--a);opacity:.6}
+.cta{text-align:center;padding:14vh 5vw}
+.cta h2{font-size:clamp(36px,7vw,84px)}
+.rv{opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}.rv.in{opacity:1;transform:none}
+footer{text-align:center;color:var(--mut);padding:30px 5vw 50px;border-top:1px solid var(--line);font-size:14px}
+footer a{color:var(--fg)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas><div class="glow" id="glow"></div>
+<nav><b>✦ themostfair</b><div><a href="#about">Обо мне</a><a href="#services">Услуги</a><a href="#works">Работы</a><a href="#contact">Контакты</a><button id="theme" aria-label="Тема">◐</button></div></nav>
+<main>
+<section class="hero">
+  <span class="tag"><i></i> Открыт для новых проектов</span>
+  <h1>Делаю сайты,<br>которые <span class="grad">продают.</span></h1>
+  <div class="role">Я создаю <span id="role"></span></div>
+  <div class="btns"><a class="btn p" href="https://t.me/struggleforfree" target="_blank" rel="noopener">Смотреть портфолио →</a><a class="btn" href="https://t.me/themostfair" target="_blank" rel="noopener">Написать в Telegram</a></div>
+</section>
+<div class="marq"><div id="mq"></div></div>
+<section id="about">
+  <h2 class="rv"><small>ОБО МНЕ</small>Дизайн + код = результат</h2>
+  <p class="rv" style="max-width:720px;color:var(--mut);font-size:18px">Я веб-разработчик и делаю современные адаптивные сайты: от лендингов и портфолио до сайтов для кафе, пекарен и небольшого бизнеса. Люблю чистый дизайн, плавные анимации и быструю загрузку. Каждый проект делаю под задачу клиента, а не по шаблону.</p>
+  <div class="stats rv"><div><b data-n="10">0</b><span>готовых сайтов</span></div><div><b data-n="100">0</b><span>% адаптивность</span></div><div><b data-n="24">0</b><span>часа на ответ</span></div></div>
+</section>
+<section id="services">
+  <h2 class="rv"><small>УСЛУГИ</small>Что я могу для вас</h2>
+  <div class="grid">
+    <div class="card rv"><div class="ic">🚀</div><h3>Лендинги</h3><p>Одностраничные сайты, которые превращают посетителей в клиентов.</p></div>
+    <div class="card rv"><div class="ic">🧁</div><h3>Сайты для бизнеса</h3><p>Кафе, рестораны, пекарни: меню, контакты, красивая подача.</p></div>
+    <div class="card rv"><div class="ic">🎨</div><h3>Портфолио</h3><p>Личные сайты с анимациями, чтобы выделиться среди остальных.</p></div>
+    <div class="card rv"><div class="ic">⚡</div><h3>Анимации и UX</h3><p>Плавные эффекты, интерактив и удобный интерфейс на любом устройстве.</p></div>
+  </div>
+</section>
+<section id="works">
+  <h2 class="rv"><small>ПОРТФОЛИО</small>Избранные работы</h2>
+  <div class="grid">
+    <a class="card work rv" href="https://t.me/struggleforfree" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><div class="thumb" style="background:linear-gradient(135deg,#6d4aff,#ff4f8b)">💼</div><h3>Сайт-портфолио</h3><p>Простой и стильный сайт для демонстрации работ.</p><div class="chips"><em>HTML</em><em>CSS</em><em>JS</em></div></a>
+    <a class="card work rv" href="https://t.me/struggleforfree" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><div class="thumb" style="background:linear-gradient(135deg,#ffb36b,#ff6b6b)">🥐</div><h3>Сайт пекарни</h3><p>Тёплый дизайн, каталог выпечки и быстрый заказ.</p><div class="chips"><em>Адаптив</em><em>Анимации</em></div></a>
+    <a class="card work rv" href="https://t.me/struggleforfree" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><div class="thumb" style="background:linear-gradient(135deg,#1fb6a6,#2f6bff)">🍽️</div><h3>Сайт ресторана</h3><p>Меню, бронирование и атмосферная подача блюд.</p><div class="chips"><em>Меню</em><em>Контакты</em></div></a>
+  </div>
+</section>
+<section id="process">
+  <h2 class="rv"><small>ПРОЦЕСС</small>Как мы работаем</h2>
+  <div class="grid steps">
+    <div class="card rv"><h3>Обсуждение</h3><p>Узнаю задачу, аудиторию и пожелания.</p></div>
+    <div class="card rv"><h3>Дизайн</h3><p>Продумываю стиль, структуру и анимации.</p></div>
+    <div class="card rv"><h3>Разработка</h3><p>Пишу чистый и быстрый код.</p></div>
+    <div class="card rv"><h3>Запуск</h3><p>Публикую сайт и помогаю с доработками.</p></div>
+  </div>
+</section>
+<section class="cta" id="contact">
+  <h2 class="rv">Давайте сделаем <span class="grad">ваш сайт</span></h2>
+  <p class="rv" style="color:var(--mut)">Напишите мне, и обсудим проект.</p>
+  <div class="btns rv" style="justify-content:center"><a class="btn p" href="https://t.me/themostfair" target="_blank" rel="noopener">@themostfair</a><a class="btn" href="https://t.me/struggleforfree" target="_blank" rel="noopener">Канал с портфолио</a></div>
+</section>
+</main>
+<footer>Made by <a href="https://t.me/themostfair" target="_blank" rel="noopener">@themostfair</a> · © 2026</footer>
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)};
+// theme
+var root=document.documentElement;
+$('#theme').onclick=function(){var d=getComputedStyle(root).getPropertyValue('--bg').trim()==='#08080d';root.setAttribute('data-theme',d?'light':'dark');setTimeout(col,50)};
+// marquee
+var items=['HTML','CSS','JavaScript','React','Анимации','UI/UX','Адаптив','SEO','Netlify','Git'];
+$('#mq').innerHTML=items.concat(items).map(function(t){return '<span>✦ '+t+'</span>'}).join('');
+// typing
+var roles=['лендинги','сайты для кафе','портфолио','анимации'],ri=0,ci=0,del=false,el=$('#role');
+(function tick(){var w=roles[ri];ci+=del?-1:1;el.textContent=w.slice(0,ci);var t=del?40:90;
+if(!del&&ci===w.length){del=true;t=1400}else if(del&&ci===0){del=false;ri=(ri+1)%roles.length;t=300}setTimeout(tick,t)})();
+// reveal + counters
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);
+e.target.querySelectorAll&&e.target.querySelectorAll('[data-n]').forEach(count)}})},{threshold:.15});
+document.querySelectorAll('.rv').forEach(function(n,i){n.style.transitionDelay=(i%4)*80+'ms';io.observe(n)});
+function count(n){var to=+n.dataset.n,s=performance.now();(function f(t){var p=Math.min((t-s)/1400,1);n.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(s)}
+// 3D tilt
+document.querySelectorAll('.card').forEach(function(c){
+c.addEventListener('mousemove',function(e){var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform='perspective(800px) rotateX('+(-y*8)+'deg) rotateY('+(x*8)+'deg) translateY(-4px)'});
+c.addEventListener('mouseleave',function(){c.style.transform=''})});
+// magnetic buttons
+document.querySelectorAll('.btn').forEach(function(b){
+b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.2)+'px,'+((e.clientY-r.top-r.height/2)*.3)+'px)'});
+b.addEventListener('mouseleave',function(){b.style.transform=''})});
+// cursor glow + particles
+var g=$('#glow'),m={x:-999,y:-999};
+addEventListener('pointermove',function(e){m.x=e.clientX;m.y=e.clientY;g.style.left=m.x+'px';g.style.top=m.y+'px'});
+var cv=$('#bg'),cx=cv.getContext('2d'),W,H,P=[],rgb='139,107,255';
+function col(){rgb=getComputedStyle(root).getPropertyValue('--dot').trim()}
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=[];var n=Math.min(90,Math.floor(W*H/18000));
+for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4})}
+addEventListener('resize',size);size();col();
+(function draw(){cx.clearRect(0,0,W,H);
+P.forEach(function(p,i){var dx=p.x-m.x,dy=p.y-m.y,d=Math.sqrt(dx*dx+dy*dy);
+if(d<140){p.x+=dx/d*1.6;p.y+=dy/d*1.6}
+p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+cx.fillStyle='rgba('+rgb+',.7)';cx.beginPath();cx.arc(p.x,p.y,1.8,0,6.3);cx.fill();
+for(var j=i+1;j<P.length;j++){var q=P[j],ex=p.x-q.x,ey=p.y-q.y,l=Math.sqrt(ex*ex+ey*ey);
+if(l<130){cx.strokeStyle='rgba('+rgb+','+(.25*(1-l/130))+')';cx.beginPath();cx.moveTo(p.x,p.y);cx.lineTo(q.x,q.y);cx.stroke()}}});
+requestAnimationFrame(draw)})();
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){setTimeout(col,50)});
+})();
+</script>
+</body>
+</html>
